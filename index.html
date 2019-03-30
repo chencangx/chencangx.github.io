@@ -16,7 +16,7 @@
   </style>
 
 </head>
-<body>
+<body style="">
 
 <div></div>
 
@@ -124,8 +124,8 @@
 
   function onSuccess() {
     document.getElementsByTagName("canvas")[0].style.display = "none";
-    document.body.style.background = 'url(./images/932f1f324d164375963ee220b5de4c0f.png) no-repeat center center'
-    /* do stuff */
+    document.body.style.background = 'url(./images/932f1f324d164375963ee220b5de4c0f.png) no-repeat top ';
+    document.body.style.backgroundSize = '100%'
   }
 
   function onFailure() { /* do stuff */
@@ -142,7 +142,7 @@
     image.onload = function () {
       loaded = true;
       var div = document.getElementById("dk");
-      div.style.backgroundImage = "url('" + url + "')";
+      // div.style.backgroundImage = "url('" + url + "')";
     }
     image.src = url;
 
