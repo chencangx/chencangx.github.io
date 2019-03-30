@@ -1,20 +1,19 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>HTML5 Canvas奇幻色彩Loading加载动画DEMO演示</title>
+  <meta charset="utf-8">
+  <title>沧</title>
 
-<style>
-body {
-  background: #111;
-}
+  <style>
+    body {
+      background: #111;
+    }
 
-canvas {
-  margin-right: auto;
-  margin-left: auto;
-  display: block;
-}
-</style>
+    canvas {
+      margin: 50% auto auto;
+      display: block;
+    }
+  </style>
 
 </head>
 <body>
@@ -22,109 +21,145 @@ canvas {
 <div></div>
 
 <script>
-var $ = {};
+  var $ = {};
 
-$.Particle = function( opt ) {
-  this.radius = 7;
-  this.x = opt.x;
-  this.y = opt.y;
-  this.angle = opt.angle;
-  this.speed = opt.speed;
-  this.accel = opt.accel;
-  this.decay = 0.01;
-  this.life = 1;
-};
+  $.Particle = function (opt) {
+    this.radius = 7;
+    this.x = opt.x;
+    this.y = opt.y;
+    this.angle = opt.angle;
+    this.speed = opt.speed;
+    this.accel = opt.accel;
+    this.decay = 0.01;
+    this.life = 3;
+  };
 
-$.Particle.prototype.step = function( i ) {
-  this.speed += this.accel;
-  this.x += Math.cos( this.angle ) * this.speed;
-  this.y += Math.sin( this.angle ) * this.speed;
-  this.angle += $.PI / 64;
-  this.accel *= 1.01;
-  this.life -= this.decay;
-  
-  if( this.life <= 0 ) {
-    $.particles.splice( i, 1 );
+  $.Particle.prototype.step = function (i) {
+    this.speed += this.accel;
+    this.x += Math.cos(this.angle) * this.speed;
+    this.y += Math.sin(this.angle) * this.speed;
+    this.angle += $.PI / 64;
+    this.accel *= 1.01;
+    this.life -= this.decay;
+
+    if (this.life <= 0) {
+      $.particles.splice(i, 1);
+    }
+  };
+
+  $.Particle.prototype.draw = function (i) {
+    $.ctx.fillStyle = $.ctx.strokeStyle = 'hsla(' + ($.tick + (this.life * 120)) + ', 100%, 60%, '
+        + this.life + ')';
+    $.ctx.beginPath();
+    if ($.particles[i - 1]) {
+      $.ctx.moveTo(this.x, this.y);
+      $.ctx.lineTo($.particles[i - 1].x, $.particles[i - 1].y);
+    }
+    $.ctx.stroke();
+
+    $.ctx.beginPath();
+    $.ctx.arc(this.x, this.y, Math.max(0.001, this.life * this.radius), 0, $.TWO_PI);
+    $.ctx.fill();
+
+    var size = Math.random() * 1.25;
+    $.ctx.fillRect(~~(this.x + ((Math.random() - 0.5) * 35) * this.life),
+        ~~(this.y + ((Math.random() - 0.5) * 35) * this.life), size, size);
   }
-};
 
-$.Particle.prototype.draw = function( i ) {
-  $.ctx.fillStyle = $.ctx.strokeStyle = 'hsla(' + ( $.tick + ( this.life * 120 ) ) + ', 100%, 60%, ' + this.life + ')';
-  $.ctx.beginPath();
-  if( $.particles[ i - 1 ] ) {
-    $.ctx.moveTo( this.x, this.y );
-    $.ctx.lineTo( $.particles[ i - 1 ].x, $.particles[ i - 1 ].y );
+  $.step = function () {
+    $.particles.push(new $.Particle({
+      x: $.width / 2 + Math.cos($.tick / 20) * $.min / 2,
+      y: $.height / 2 + Math.sin($.tick / 20) * $.min / 2,
+      angle: $.globalRotation + $.globalAngle,
+      speed: 0,
+      accel: 0.01
+    }));
+
+    $.particles.forEach(function (elem, index) {
+      elem.step(index);
+    });
+
+    $.globalRotation += $.PI / 6;
+    $.globalAngle += $.PI / 6;
+  };
+
+  $.draw = function () {
+    $.ctx.clearRect(0, 0, $.width, $.height);
+
+    $.particles.forEach(function (elem, index) {
+      elem.draw(index);
+    });
+  };
+
+  $.init = function () {
+    $.canvas = document.createElement('canvas');
+    $.ctx = $.canvas.getContext('2d');
+    $.width = 1000;
+    $.height = 1000;
+    $.canvas.width = $.width * window.devicePixelRatio;
+    $.canvas.height = $.height * window.devicePixelRatio;
+    $.canvas.style.width = $.width + 'px';
+    $.canvas.style.height = $.height + 'px';
+    $.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    $.min = $.width * 0.5;
+    $.particles = [];
+    $.globalAngle = 0;
+    $.globalRotation = 0;
+    $.tick = 0;
+    $.PI = Math.PI;
+    $.TWO_PI = $.PI * 2;
+    $.ctx.globalCompositeOperation = 'lighter';
+    document.body.appendChild($.canvas);
+    $.loop();
+  };
+
+  $.loop = function () {
+    requestAnimationFrame($.loop);
+    $.step();
+    $.draw();
+    $.tick++;
+  };
+
+  $.init();
+
+  function onSuccess() {
+    document.getElementsByTagName("canvas")[0].style.display = "none";
+    document.body.style.background = 'url(./image/932f1f324d164375963ee220b5de4c0f.png) no-repeat center center'
+    /* do stuff */
   }
-  $.ctx.stroke();
-  
-  $.ctx.beginPath();
-  $.ctx.arc( this.x, this.y, Math.max( 0.001, this.life * this.radius ), 0, $.TWO_PI );
-  $.ctx.fill();
-  
-  var size = Math.random() * 1.25;
-  $.ctx.fillRect( ~~( this.x + ( ( Math.random() - 0.5 ) * 35 ) * this.life ), ~~( this.y + ( ( Math.random() - 0.5 ) * 35 ) * this.life ), size, size );
-}
 
-$.step = function() {
-  $.particles.push( new $.Particle({
-    x: $.width / 2 + Math.cos( $.tick / 20 ) * $.min / 2,
-    y: $.height / 2 + Math.sin( $.tick / 20 ) * $.min / 2,
-    angle: $.globalRotation + $.globalAngle,
-    speed: 0,
-    accel: 0.01
-  }));
-  
-  $.particles.forEach( function( elem, index ) {
-    elem.step( index );
-  });
-  
-  $.globalRotation += $.PI / 6;
-  $.globalAngle += $.PI / 6;
-};
+  function onFailure() { /* do stuff */
+  }
 
-$.draw = function() {
-  $.ctx.clearRect( 0, 0, $.width, $.height );
-  
-  $.particles.forEach( function( elem, index ) {
-    elem.draw( index );
-  });
-};
+  BackgroundLoader('./image/932f1f324d164375963ee220b5de4c0f.png', 2, onSuccess, onFailure);
 
-$.init = function() {
-  $.canvas = document.createElement( 'canvas' );
-  $.ctx = $.canvas.getContext( '2d' );
-  $.width = 300;
-  $.height = 300;
-  $.canvas.width = $.width * window.devicePixelRatio;
-  $.canvas.height = $.height * window.devicePixelRatio;
-  $.canvas.style.width = $.width + 'px';
-  $.canvas.style.height = $.height + 'px';
-  $.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  $.min = $.width * 0.5;
-  $.particles = [];
-  $.globalAngle = 0;
-  $.globalRotation = 0;
-  $.tick = 0;
-  $.PI = Math.PI;
-  $.TWO_PI = $.PI * 2;
-  $.ctx.globalCompositeOperation = 'lighter';
-  document.body.appendChild( $.canvas );
-  $.loop();
-};
+  function BackgroundLoader(url, seconds, success, failure) {
+    var loaded = false;
+    var image = new Image();
 
-$.loop = function() {
-  requestAnimationFrame( $.loop );
-  $.step();
-  $.draw();
-  $.tick++;
-};
+    // this will occur when the image is successfully loaded
+    // no matter if seconds past
+    image.onload = function () {
+      loaded = true;
+      var div = document.getElementById("dk");
+      div.style.backgroundImage = "url('" + url + "')";
+    }
+    image.src = url;
 
-$.init();
+    setTimeout(function () {
+      // if when the time has passed image.onload had already occurred,
+      // run success()
+      if (loaded) {
+        success();
+      } else {
+        failure();
+      }
+    }, seconds * 1000);
+
+  }
 </script>
 
 <div style="text-align:center;clear:both;">
-<script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
-<script src="/follow.js" type="text/javascript"></script>
 </div>
 
 </body>
