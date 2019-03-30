@@ -6,7 +6,8 @@
 
   <style>
     body {
-      background: #111;
+      background: url(./images/932f1f324d164375963ee220b5de4c0f.png) no-repeat top;
+      background-size: 100%;
     }
 
     canvas {
@@ -122,43 +123,6 @@
 
   $.init();
 
-  function onSuccess() {
-    document.getElementsByTagName("canvas")[0].style.display = "none";
-    document.body.style.background = 'url(./images/932f1f324d164375963ee220b5de4c0f.png) no-repeat top';
-    document.body.style.backgroundSize = '100%'
-  }
-
-  function onFailure() { /* do stuff */
-  }
-
-  BackgroundLoader('./images/932f1f324d164375963ee220b5de4c0f.png', 2, onSuccess, onFailure);
-
-  function BackgroundLoader(url, seconds, success, failure) {
-    var loaded = false;
-    var image = new Image();
-
-    // this will occur when the image is successfully loaded
-    // no matter if seconds past
-    image.onload = function () {
-      loaded = true;
-      // var div = document.getElementById("dk");
-      // div.style.backgroundImage = "url('" + url + "')";
-      document.body.style.background = 'url(./images/932f1f324d164375963ee220b5de4c0f.png) no-repeat top';
-      document.body.style.backgroundSize = '100%'
-    };
-    image.src = url;
-
-    setTimeout(function () {
-      // if when the time has passed image.onload had already occurred,
-      // run success()
-      if (loaded) {
-        success();
-      } else {
-        failure();
-      }
-    }, seconds * 1000);
-
-  }
 </script>
 
 <div style="text-align:center;clear:both;">
