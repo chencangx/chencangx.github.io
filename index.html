@@ -124,14 +124,14 @@
 
   function onSuccess() {
     document.getElementsByTagName("canvas")[0].style.display = "none";
-    document.body.style.background = 'url(./image/932f1f324d164375963ee220b5de4c0f.png) no-repeat center center'
+    document.body.style.background = 'url(./images/932f1f324d164375963ee220b5de4c0f.png) no-repeat center center'
     /* do stuff */
   }
 
   function onFailure() { /* do stuff */
   }
 
-  BackgroundLoader('./image/932f1f324d164375963ee220b5de4c0f.png', 2, onSuccess, onFailure);
+  BackgroundLoader('./images/932f1f324d164375963ee220b5de4c0f.png', 2, onSuccess, onFailure);
 
   function BackgroundLoader(url, seconds, success, failure) {
     var loaded = false;
